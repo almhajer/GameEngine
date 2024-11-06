@@ -11,14 +11,21 @@ set(GLFW_SDK "/Users/mac/glfw/")
 
 # إضافة الملفات التنفيذية
 
-file(GLOB SRC_FILES src/*.cpp src/*.hpp)
-add_executable(GameEngine main.cpp ${SRC_FILES})
+# تعريف الملفات المصدر والرأس
+file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/include/*.h")
+file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/Source/*.cpp")
+
+# إضافة الهدف التنفيذي وتضمين الملفات
+add_executable(GameEngine main.cpp ${SRC_FILES} ${HEADER_FILES} ${SOURCE_FILES}
+        VulkanCore/include/VulkanApp.h
+        VulkanCore/include/VulkanApp.h)
 
 # تضمين مسارات الـ include بعد إنشاء الهدف
 target_include_directories(GameEngine PRIVATE
         "${VULKAN_SDK}/include"
         "${GLFW_SDK}/include"
-        "../../BK/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/include/"
 )
 
 # ربط مكتبات Vulkan و GLFW بشكل مباشر
@@ -31,13 +38,13 @@ target_link_libraries(GameEngine
 # إعداد الأيقونة لتطبيق macOS (اختياري)
 
 # إعداد الأيقونة لتطبيق macOS (اختياري)
-set(APP_ICON_MACOSX "../../BK/Resources/logo.icns")
+set(APP_ICON_MACOSX "../../GameEngine/Resources/logo.icns")
 if (EXISTS "${APP_ICON_MACOSX}")
-    set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "../../BK/Resources")
+    set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "../../GameEngine/Resources")
     set_target_properties(GameEngine PROPERTIES
             MACOSX_BUNDLE TRUE
             MACOSX_BUNDLE_ICON_FILE "logo.icns"
-            MACOSX_BUNDLE_INFO_PLIST "../../BK/Resources/Info.plist"
+            MACOSX_BUNDLE_INFO_PLIST "../../GameEngine/Resources/Info.plist"
             RESOURCE "${APP_ICON_MACOSX}"
     )
 endif ()
@@ -46,7 +53,7 @@ endif ()
 add_custom_command(
         TARGET GameEngine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_SOURCE_DIR}/Resources" "${CMAKE_BINARY_DIR}/BK.app/Contents/Resources"
+        "${CMAKE_SOURCE_DIR}/Resources" "${CMAKE_BINARY_DIR}/GameEngine.app/Contents/Resources"
         COMMENT "Copying Resources to the application bundle"
 )
 
