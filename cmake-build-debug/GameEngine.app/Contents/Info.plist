@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>MyApplication</string>
+
+    <!-- معرف الحزمة الفريد لتطبيقك -->
+    <key>CFBundleIdentifier</key>
+    <string>com.BK.MyApplication</string>
+
+    <!-- إصدار التطبيق -->
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+
+    <!-- إصدار التطبيق (قد يكون مختلفًا عن CFBundleVersion للتمييز بين الإصدارات) -->
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+
+    <!-- اسم ملف الأيقونة، بدون الامتداد -->
+    <key>CFBundleIconFile</key>
+    <string>logo</string>
+</dict>
+</plist>
