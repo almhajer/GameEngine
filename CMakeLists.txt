@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.29)
 project(GameEngine)
 
@@ -9,47 +8,59 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(VULKAN_SDK "/Users/mac/VulkanSDK/macOS/")
 set(GLFW_SDK "/Users/mac/glfw/")
 
-# إضافة الملفات التنفيذية
+# تعريف متغير يحمل قيمة true إذا كانت NDEBUG مُعرفة
+set(NDEBUG_ENABLED OFF)  # إعداد المتغير افتراضيًا إلى OFF
+if(DEFINED NDEBUG)
+    set(NDEBUG_ENABLED TRUE)
+endif()
 
-file(GLOB SRC_FILES src/*.cpp src/*.hpp)
-add_executable(GameEngine main.cpp ${SRC_FILES})
+# تعريف الملفات المصدر والرأس
+file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/include/*.h")
+file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/Source/*.cpp")
 
-# تضمين مسارات الـ include بعد إنشاء الهدف
+# إضافة الهدف التنفيذي وتضمين الملفات
+add_executable(GameEngine main.cpp ${SOURCE_FILES} ${HEADER_FILES}
+        VulkanCore/include/BK_vulkan_device.h
+        VulkanCore/include/BK_vulkan_device.h
+        VulkanCore/Source/device.cpp
+        VulkanCore/include/BK_vulkan_wrapper.h
+        VulkanCore/Source/wrapper.cpp
+)
+
+# تضمين مسارات الـ include
 target_include_directories(GameEngine PRIVATE
         "${VULKAN_SDK}/include"
         "${GLFW_SDK}/include"
-        "../../BK/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/VulkanCore/include/"
 )
 
-# ربط مكتبات Vulkan و GLFW بشكل مباشر
+# ربط مكتبات Vulkan و GLFW
 target_link_libraries(GameEngine
         "${VULKAN_SDK}/lib/libvulkan.dylib"
         "${VULKAN_SDK}/lib/libMoltenVK.dylib"
         "${GLFW_SDK}/lib/libglfw.3.dylib"
-
 )
-# إعداد الأيقونة لتطبيق macOS (اختياري)
 
 # إعداد الأيقونة لتطبيق macOS (اختياري)
-set(APP_ICON_MACOSX "../../BK/Resources/logo.icns")
+set(APP_ICON_MACOSX "${CMAKE_SOURCE_DIR}/Resources/logo.icns")
 if (EXISTS "${APP_ICON_MACOSX}")
-    set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "../../BK/Resources")
+    set_source_files_properties(${APP_ICON_MACOSX} PROPERTIES MACOSX_PACKAGE_LOCATION "${CMAKE_SOURCE_DIR}/Resources")
     set_target_properties(GameEngine PROPERTIES
             MACOSX_BUNDLE TRUE
             MACOSX_BUNDLE_ICON_FILE "logo.icns"
-            MACOSX_BUNDLE_INFO_PLIST "../../BK/Resources/Info.plist"
+            MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/Resources/Info.plist"
             RESOURCE "${APP_ICON_MACOSX}"
     )
-endif ()
+endif()
 
 # نسخ مجلد Resources إلى داخل حزمة التطبيق بعد البناء
 add_custom_command(
         TARGET GameEngine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_SOURCE_DIR}/Resources" "${CMAKE_BINARY_DIR}/BK.app/Contents/Resources"
+        "${CMAKE_SOURCE_DIR}/Resources" "${CMAKE_BINARY_DIR}/GameEngine.app/Contents/Resources"
         COMMENT "Copying Resources to the application bundle"
 )
-
 
 # إعداد بيئة البناء بناءً على نوع البناء (Debug أو Release)
 if (NOT CMAKE_BUILD_TYPE)
