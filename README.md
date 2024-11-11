@@ -1,1 +1,4 @@
-تعلم فولكان
+Pass me that render
+RenderPassBegininfo
+vkCmdBeginRenderPass
+RenderPassBegininfo
